@@ -1,175 +1,163 @@
-"""
-    ################################ JOGO DA FORCA ##############################
-        +--------
-        |       |
-        |       O           Desenvolvido por: Abhner Adriel C. Silva
-        |      /|\\         Curso: Ciência da Computação | Cin-UFPE
-        |      / \\         Disciplina: Introdução à programação - 1º Período
-        |
-       / \
-"""
+################################ JOGO DA FORCA ################################
 
-# Módulos utilizados:
 import random as rd
 
 
-# Função para desenhar a forca na tela em função dos erros do jogador:
-def desenho_forca(qnt_erros):
-    if qnt_erros == 1:
-        print(' +--------')
-        print(' |       |')
-        print(' |       O')
-        print(' |')
-        print(' |')
-        print(' |')
-        print('/ \\')
-    elif qnt_erros == 2:
-        print(' +--------')
-        print(' |       |')
-        print(' |       O')
-        print(' |       |')
-        print(' |')
-        print(' |')
-        print('/ \\')
-    elif qnt_erros == 3:
-        print(' +--------')
-        print(' |       |')
-        print(' |       O')
-        print(' |      /|')
-        print(' |')
-        print(' |')
-        print('/ \\')
-    elif qnt_erros == 4:
-        print(' +--------')
-        print(' |       |')
-        print(' |       O')
-        print(' |      /|\\')
-        print(' |')
-        print(' |')
-        print('/ \\')
-    elif qnt_erros == 5:
-        print(' +--------')
-        print(' |       |')
-        print(' |       O')
-        print(' |      /|\\')
-        print(' |      /')
-        print(' |')
-        print('/ \\')
-    elif qnt_erros == 6:
-        print(' +--------')
-        print(' |       |')
-        print(' |       O')
-        print(' |      /|\\')
-        print(' |      / \\')
-        print(' |')
-        print('/ \\')
-    else:
-        print(' +--------')
-        print(' |       |')
-        print(' |')
-        print(' |')
-        print(' |')
-        print(' |')
-        print('/ \\')
+# Estados da forca
+FORCA = [
+    """
+ +--------
+ |       |
+ |
+ |
+ |
+ |
+/ \\
+""",
+    """
+ +--------
+ |       |
+ |       O
+ |
+ |
+ |
+/ \\
+""",
+    """
+ +--------
+ |       |
+ |       O
+ |       |
+ |
+ |
+/ \\
+""",
+    """
+ +--------
+ |       |
+ |       O
+ |      /|
+ |
+ |
+/ \\
+""",
+    """
+ +--------
+ |       |
+ |       O
+ |      /|\\
+ |
+ |
+/ \\
+""",
+    """
+ +--------
+ |       |
+ |       O
+ |      /|\\
+ |      /
+ |
+/ \\
+""",
+    """
+ +--------
+ |       |
+ |       O
+ |      /|\\
+ |      / \\
+ |
+/ \\
+"""
+]
 
 
-# Configurações iniciais:
-jogo_iniciado, fim_jogo = False, False
-lista_palavras = ['Funcionário', 'Apresentador', 'Palhaço', 'Relojoeiro', 'Crocodilo',
-                  'Abelha', 'Aviador', 'Barril', 'Austrália', 'Coração', 'Dragão',
-                  'Laranja', 'Melancia', 'Goiaba', 'Rio de Janeiro', 'Pernambuco',
-                  'Rio Grande do Sul', 'Aracajú', 'Menino Ney', 'Estelionatário',
-                  'Matemática', 'Embaixador', 'Agricultor', 'Engenheiro', 'Jesus',
-                  'Professor', 'Médico', 'Cientista', 'Astronomia', 'Elefante']
-palavra_sorteada = ''
-erros_jogador, letras_totais_digitadas, letras_acertadas = 0, [], []
+def desenhar_forca(erros):
+    print(FORCA[erros])
 
-# Loop principal do jogo:
-while not fim_jogo:
-    # Verificar se o jogo já foi iniciado:
-    if not jogo_iniciado:
-        print()
-        nome = '=' * 20 + ' JOGO DA FORCA ' + '=' * 20
-        print(f'{nome:+^57}')
-        palavra_sorteada = rd.choice(lista_palavras)
-        erros_jogador, letras_totais_digitadas, letras_acertadas = 0, [], []
-        jogo_iniciado = True
 
-    # Mostrar forca na tela:
-    desenho_forca(erros_jogador)
-    
-    # Esconder palavra escolhida na tela:
-    palavra_escondida = ''
-    for char in palavra_sorteada.lower():
-        if char in letras_acertadas:
-            palavra_escondida += char.upper()
-        elif char == ' ':
-            palavra_escondida += '  '
+def escolher_palavra(lista):
+    return rd.choice(lista).lower()
+
+
+def mostrar_palavra(palavra, letras_acertadas):
+    resultado = ""
+    for letra in palavra:
+        if letra == " ":
+            resultado += "  "
+        elif letra in letras_acertadas:
+            resultado += letra.upper() + " "
         else:
-            palavra_escondida += '_ '
-    print()
-    print(palavra_escondida)
-    print()
+            resultado += "_ "
+    return resultado
 
-    # Mostrar letras (caracteres) totais já digitados:
-    if not letras_totais_digitadas:
-        print("Letras já digitadas: Nenhuma!")
-    else:
-        print(f"Letras já digitadas: {','.join(letras_totais_digitadas)}")
 
-    # Verificar se o jogador venceu:
-    if '_' not in palavra_escondida:
-        print('>> Parabéns! Você acertou a palavra escondida! <<')
-        fim_jogo = True
+def entrada_valida(letra, letras_usadas):
+    if not letra or len(letra) != 1 or letra == " ":
+        print("Entrada inválida!")
+        return False
+    if letra in letras_usadas:
+        print("Você já digitou essa letra!")
+        return False
+    return True
 
-    # Verificar se o jogador perdeu:
-    if erros_jogador == 6:
-        print(f'>> Que pena! Você não acertou a palavra escondida! <<\nA palavra era: "{palavra_sorteada}"')
-        fim_jogo = True
 
-    # Tratamento do término do jogo:
-    if fim_jogo:
-        while True:
-            print()
-            jogar_novamente = input('Deseja jogar novamente?\n[S]-Sim\n[N]-Não\n>> ').lower()
-            
-            # Tratamento de erros mais comuns:
-            if (not jogar_novamente or len(jogar_novamente) > 1 or jogar_novamente == ' ' or
-                    (jogar_novamente != 's' and jogar_novamente != 'n')):
-                print('Ops! Entrada inválida. Pressione >> ENTER <<', end=' ')
-                input()
-                continue
-            else:
-                if jogar_novamente == 's':
-                    fim_jogo = False
-                    jogo_iniciado = False
-                else:
-                    fim_jogo = True
-                break
-        continue
+def jogar():
+    palavras = [
+        'funcionário', 'apresentador', 'palhaço', 'relojoeiro', 'crocodilo',
+        'abelha', 'aviador', 'barril', 'austrália', 'coração', 'dragão',
+        'laranja', 'melancia', 'goiaba', 'rio de janeiro', 'pernambuco',
+        'rio grande do sul', 'aracaju', 'menino ney', 'estelionatário',
+        'matemática', 'embaixador', 'agricultor', 'engenheiro', 'jesus',
+        'professor', 'médico', 'cientista', 'astronomia', 'elefante'
+    ]
 
-    # Entrada do jogador:
+    palavra = escolher_palavra(palavras)
+    erros = 0
+    letras_usadas = []
+    letras_acertadas = []
+
     while True:
-        letra_digitada = input('Digite uma letra: ').lower()
-        
-        # Tratamento de erros mais comuns:
-        if not letra_digitada or len(letra_digitada) > 1 or letra_digitada == ' ':
-            print('Ops! Entrada inválida. Pressione >> ENTER <<', end=' ')
-            input()
-            continue
-        elif letra_digitada in letras_totais_digitadas:
-            print('Ops! Essa letra já foi escolhida! Pressione >> ENTER <<', end=' ')
-            input()
-        else:
+        print("\n" + "=" * 20 + " JOGO DA FORCA " + "=" * 20)
+
+        desenhar_forca(erros)
+
+        palavra_escondida = mostrar_palavra(palavra, letras_acertadas)
+        print("\n", palavra_escondida, "\n")
+
+        print("Letras usadas:", ", ".join(letras_usadas) if letras_usadas else "Nenhuma")
+
+        # Vitória
+        if "_" not in palavra_escondida:
+            print("🎉 Você venceu!")
             break
 
-    # Armazena o total de letras já digitadas:
-    letras_totais_digitadas.append(letra_digitada)
+        # Derrota
+        if erros == 6:
+            print(f"💀 Você perdeu! A palavra era: {palavra}")
+            break
 
-    # Verificar se o jogador acertou a letra:
-    if letra_digitada in palavra_sorteada.lower():
-        letras_acertadas.append(letra_digitada)
-    else:
-        erros_jogador += 1
-    print()
-    
+        # Entrada
+        while True:
+            letra = input("Digite uma letra: ").lower()
+            if entrada_valida(letra, letras_usadas):
+                break
+
+        letras_usadas.append(letra)
+
+        if letra in palavra:
+            letras_acertadas.append(letra)
+        else:
+            erros += 1
+
+
+def main():
+    while True:
+        jogar()
+        op = input("\nJogar novamente? (s/n): ").lower()
+        if op != 's':
+            print("Até a próxima!")
+            break
+
+
+if __name__ == "__main__":
+    main()
